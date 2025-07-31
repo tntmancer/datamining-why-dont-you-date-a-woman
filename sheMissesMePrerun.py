@@ -11,10 +11,13 @@ class FaceRatingApp:
     def __init__(self, image_paths):
         # models taken from dlib examples
         self.face_recognizer = FaceRecognizer('models/encoderModel.dat', 'models/recognitionModel.dat')
+        # create the main window
         self.root = tk.Tk()
         self.root.title("She Misses Me")
+        # shuffle and prepare image paths
         self.image_paths = image_paths.copy()
         random.shuffle(self.image_paths)
+        # Initialize the heap and lists for liked and disliked images
         self.image_heap = []
         self.liked_images = []
         self.disliked_images = []
@@ -32,22 +35,23 @@ class FaceRatingApp:
         # Buttons
         button_frame = tk.Frame(self.root)
         button_frame.pack(pady=10)
-        
+        # Like button
         self.like_btn = tk.Button(button_frame, text="Like ❤️", 
              command=self.like_face, bg="green",
              width=10, height=2, font=('Arial', 12, 'bold'), 
              justify=tk.CENTER)
         self.like_btn.pack(side=tk.LEFT, padx=10)
-        
+        # Pass button
         self.pass_btn = tk.Button(button_frame, text="Pass ❌", 
                                  command=self.pass_face, bg="red",
                                  width=10, height=2, font=('Arial', 12, 'bold'),
                                  justify=tk.CENTER)
         self.pass_btn.pack(side=tk.LEFT, padx=10)
-        
+        # Show the first image
         self.next_image()
     
     def show_current_image(self):
+        """ Display the current image in the label. """
         if self.current_image_path:
             # Load and resize image
             img = Image.open(self.current_image_path)
@@ -58,6 +62,7 @@ class FaceRatingApp:
             self.image_label.image = photo
     
     def like_face(self):
+        """ Handle the like button click. """
         print(f"Liked: {self.current_image_path}")
         print(f"Total Liked Images: {len(self.liked_images) + 1}")
         print(f"Total Evaluated Images: {len(self.liked_images) + len(self.disliked_images) + 1}")
@@ -67,6 +72,7 @@ class FaceRatingApp:
         self.next_image()
     
     def pass_face(self):
+        """ Handle the pass button click. """
         print(f"Passed: {self.current_image_path}")
         print(f"Total Passed Images: {len(self.disliked_images) + 1}")
         print(f"Total Evaluated Images: {len(self.liked_images) + len(self.disliked_images) + 1}")
@@ -116,6 +122,7 @@ class FaceRatingApp:
         # Check if cache exists and is newer than the faces directory
         if os.path.exists(cache_file):
             try:
+                # Check if cache is valid
                 cache_time = os.path.getmtime(cache_file)
                 faces_time = os.path.getmtime("faces")
                 
