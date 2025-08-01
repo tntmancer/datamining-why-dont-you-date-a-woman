@@ -36,13 +36,13 @@ class FaceRatingApp:
         button_frame = tk.Frame(self.root)
         button_frame.pack(pady=10)
         # Like button
-        self.like_btn = tk.Button(button_frame, text="Like ❤️", 
+        self.like_btn = tk.Button(button_frame, text="Like", 
              command=self.like_face, bg="green",
              width=10, height=2, font=('Arial', 12, 'bold'), 
              justify=tk.CENTER)
         self.like_btn.pack(side=tk.LEFT, padx=10)
         # Pass button
-        self.pass_btn = tk.Button(button_frame, text="Pass ❌", 
+        self.pass_btn = tk.Button(button_frame, text="Pass", 
                                  command=self.pass_face, bg="red",
                                  width=10, height=2, font=('Arial', 12, 'bold'),
                                  justify=tk.CENTER)
