@@ -114,32 +114,60 @@ class FaceRatingApp:
         
         self.image_heap = new_heap
 
-    # This saves us from recalculating this at runtime each time
+    # # This saves us from recalculating this at runtime each time
+    # def load_or_compute_descriptors(self):
+    #     """ Load descriptors from cache or compute them if cache doesn't exist or is outdated. """
+    #     cache_file = "face_descriptors_cache.pkl"
+        
+    #     # Check if cache exists and is newer than the faces directory
+    #     if os.path.exists(cache_file):
+    #         try:
+    #             print("Loading descriptors from cache...")
+    #             with open(cache_file, 'rb') as f:
+    #                 cached_descriptors = pickle.load(f)
+                    
+    #                 # Verify all current images are in cache
+    #                 if all(img_path in cached_descriptors for img_path in self.image_paths):
+    #                     return {path: cached_descriptors[path] for path in self.image_paths}
+    #                 else:
+    #                     print("Cache missing some images, recomputing...")
+    #         except Exception as e:
+    #             print(f"Error loading cache: {e}, recomputing...")
+        
+    #     # Compute descriptors and save to cache
+    #     print("Computing facial descriptors...")
+    #     descriptors = self.precompute_descriptors()
+        
+    #     try:
+    #         with open(cache_file, 'wb') as f:
+    #             pickle.dump(descriptors, f)
+    #         print(f"Saved descriptors to {cache_file}")
+    #     except Exception as e:
+    #         print(f"Error saving cache: {e}")
+        
+    #     return descriptors
+
     def load_or_compute_descriptors(self):
-        """ Load descriptors from cache or compute them if cache doesn't exist or is outdated. """
+        """ Load descriptors from cache or compute them if cache doesn't exist. """
         cache_file = "face_descriptors_cache.pkl"
         
-        # Check if cache exists and is newer than the faces directory
+        # Check if cache exists
         if os.path.exists(cache_file):
             try:
-                # Check if cache is valid
-                cache_time = os.path.getmtime(cache_file)
-                faces_time = os.path.getmtime("faces")
-                
-                if cache_time > faces_time:
-                    print("Loading descriptors from cache...")
-                    with open(cache_file, 'rb') as f:
-                        cached_descriptors = pickle.load(f)
+                print("Loading descriptors from cache...")
+                with open(cache_file, 'rb') as f:
+                    cached_descriptors = pickle.load(f)
                     
                     # Verify all current images are in cache
                     if all(img_path in cached_descriptors for img_path in self.image_paths):
+                        print(f"Successfully loaded {len(cached_descriptors)} descriptors from cache")
                         return {path: cached_descriptors[path] for path in self.image_paths}
                     else:
                         print("Cache missing some images, recomputing...")
-                else:
-                    print("Cache is outdated, recomputing...")
             except Exception as e:
                 print(f"Error loading cache: {e}, recomputing...")
+        else:
+            print("No cache file found, computing descriptors...")
         
         # Compute descriptors and save to cache
         print("Computing facial descriptors...")
@@ -148,7 +176,7 @@ class FaceRatingApp:
         try:
             with open(cache_file, 'wb') as f:
                 pickle.dump(descriptors, f)
-            print(f"Saved descriptors to {cache_file}")
+            print(f"Saved {len(descriptors)} descriptors to {cache_file}")
         except Exception as e:
             print(f"Error saving cache: {e}")
         
